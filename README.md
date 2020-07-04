@@ -22,7 +22,7 @@ IOT Platform for companies having single/multiple sites dealing with workers, to
 - Run in watch mode  ``` npm start ```
 - Run unit test  ``` npm run test ```
 - build & run in production mode ``` npm run serve ```
-- run in docker environmand  ``` npm run build & then bash run.sh ```
+- run in docker environmand  ``` docker-compose up ``` I have set docker file, docker-compose up will create mongodb image & use docker file of application to create  & run environment
 
 
 ## Assumptions
