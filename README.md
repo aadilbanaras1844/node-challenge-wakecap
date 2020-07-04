@@ -18,6 +18,12 @@ IOT Platform for companies having single/multiple sites dealing with workers, to
 - Nodemailer ( for sending emails )
 - Moment ( for processing, formatting time )
 
+## Commands
+- Run in watch mode  ``` npm start ```
+- Run unit test  ``` npm run test ```
+- build & run in production mode ``` npm run serve ```
+- run in docker environmand  ``` npm run build & then bash run.sh ```
+
 
 ## Assumptions
 
