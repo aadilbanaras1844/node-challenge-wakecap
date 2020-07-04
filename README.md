@@ -4,62 +4,61 @@
 IOT Platform for companies having single/multiple sites dealing with workers, to monitor their attendence, absents, late comings, active hours, inactive  hours.
 
 ## Technology used
+- NodeJS (v12)
+- MongoDB (v3.6)
+- Docker
+- Docker-compose  ( for running docker )
 
-### NodeJS (v12)
-### MongoDB (v3.6)
-### Docker
-### Docker-compose  ( for running docker )
-
-## Packages & Libraries Used
-
-### mongoose
-### agenda ( for queuing jobs to run at specific time)
-### Express
-### Joi ( for validating parameters )
-### Mocha & Chai (for test cases, not added yet)
-### Nodemailer ( for sending emails )
-### Moment ( for processing, formatting time )
+## Packages & Libraries used
+- mongoose
+- agenda ( for queuing jobs to run at specific time)
+- Express
+- Joi ( for validating parameters )
+- Mocha & Chai (for test cases, not added yet)
+- Nodemailer ( for sending emails )
+- Moment ( for processing, formatting time )
 
 
 ## Assumptions
 
-For Site
-    timezone => +04:00 , -03:20 ( format )
-    starting & ending time => 09:00 , 16:00,   ( format , no am or pm )
-    late threshold => number which will indicactes minutes
+- For Site
+    * timezone => +04:00 , -03:20 ( format )
+    * starting & ending time => 09:00 , 16:00,   ( format , no am or pm )
+    * late threshold => number which will indicactes minutes
 
 
-For Worker Location
-    duration => any number which will be considered as seconds as  shown in example provided
+- For Worker Location
+    * duration => any number which will be considered as seconds as  shown in example provided
 
-For Workers
-    The first entry on a particular day will be considered arriving time.
-    Arriving time will be compared with starting time of site, and after matching with late threshold , it will be decided  either worker is late or not.
-    Worker with no entry on a particular day will be considered as absent.
-    Active time will be , sum of all seconds of location where is_active was true.
-    InActive time will be , sum of all seconds of location where is_active was false.
+- For Workers
+    * The first entry on a particular day will be considered arriving time.
+    * Arriving time will be compared with starting time of site, and after matching with late threshold , it will be decided  either worker is late or not.
+    * Worker with no entry on a particular day will be considered as absent.
+    * Active time will be , sum of all seconds of location where is_active was true.
+    * InActive time will be , sum of all seconds of location where is_active was false.
 
-Reports
-    Report will me emailed to site's email, at 10:00pm ( as per timezone of site ).
-
-
-System
-    To avoid confusion and have fix standar, I have set timezone of Application as UTC+00:00 i.e Europe/Ireland
-
-Reports
-    After adding/updating sites,
-    call the api http://localhost:3003/api/sites/refresh-queues
-    this will configure queues to send report email to sites at midnight
-
-Don't add any data directly, use apis to insert data.
+- Reports
+    * Report will me emailed to site's email, at 10:00pm ( as per timezone of site ).
 
 
-Rest Apis
-    add client
+- System
+    * To avoid confusion and have fix standar, I have set timezone of Application as UTC+00:00 i.e Europe/Ireland
+
+- Reports
+    * After adding/updating sites,
+    * call the api http://localhost:3003/api/sites/refresh-queues
+    * this will configure queues to send report email to sites at midnight
+
+> Don't add any data directly, use apis to insert data.
+
+
+## Rest Apis
+### add client
         url: localhost:3003/api/clients
         method: POST
         params: {name: 'ddddd'}
-    add site
+
+### add site
         url: localhost:3003/api/sites
         method: POST
         params: {
@@ -71,7 +70,7 @@ Rest Apis
             late_threshold:5
             email:sdf@gmail.com
         }
-    add worker
+### add worker
         url: localhost:3003/api/workers
         method: POST
         params: {
@@ -79,7 +78,7 @@ Rest Apis
             site_id:5efd90aa506018306d2e1970
             worker_id:3
         }
-    add worker location
+### add worker location
         url: localhost:3003/api/workers/location
         method: POST
         params: {
@@ -95,9 +94,9 @@ Rest Apis
             "duration" : 180,
             "worker_id" : 1
         }
-    Refresh Queues
+### Refresh Queues
         url : http://localhost:3003/api/sites/refresh-queues
         method: GET
-    Dashboard for queues
+### Dashboard for queues
         url : http://localhost:3003/dash
         method: GET
