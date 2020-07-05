@@ -4,12 +4,6 @@
         "es2020": true,
         "mocha": true
     },
-    "env-test":{
-        "browser": false,
-        "es6": true,
-        "node": true,
-        "mocha": true
-    },
     "extends": [
         "airbnb-base"
     ],
