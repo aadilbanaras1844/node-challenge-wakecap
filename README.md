@@ -22,7 +22,7 @@ IOT Platform for companies having single/multiple sites dealing with workers, to
 - Run in watch mode  ``` npm start ```
 - Run unit test  ``` npm run test ```
 - build & run in production mode ``` npm run serve ```
-- run in docker environmand  ``` npm run build & then bash run.sh ```
+- run in docker environmand  ``` docker-compose up ``` I have set docker file, docker-compose up will create mongodb image & use docker file of application to create  & run environment
 
 
 ## Assumptions
@@ -31,6 +31,7 @@ IOT Platform for companies having single/multiple sites dealing with workers, to
     * timezone => +04:00 , -03:20 ( format )
     * starting & ending time => 09:00 , 16:00,   ( format , no am or pm )
     * late threshold => number which will indicactes minutes
+    * Every site will have its own email, on which report will be send 
 
 
 - For Worker Location
@@ -45,6 +46,8 @@ IOT Platform for companies having single/multiple sites dealing with workers, to
 
 - Reports
     * Report will me emailed to site's email, at 10:00pm ( as per timezone of site ).
+    * Report will contain just stringify json of stats of workers , 
+    * Email could be delayed as I used free mailtrap to send email, but if needed that can be replace with gmail or other smtp to work well. 
 
 
 - System
