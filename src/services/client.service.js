@@ -5,8 +5,9 @@ import { clientModel } from '../models';
 export default class ClientService {
   async add(params) {
     try {
-      const newObject = new clientModel(params);
-      return await newObject.save();
+      // eslint-disable-next-line new-cap
+      this.newObject = new clientModel(params);
+      return await this.newObject.save();
     } catch (error) {
       return error;
     }
@@ -14,8 +15,8 @@ export default class ClientService {
 
   async find() {
     try {
-      const rows = await clientModel.find();
-      return rows;
+      this.rows = await clientModel.find();
+      return this.rows;
     } catch (error) {
       return error;
     }

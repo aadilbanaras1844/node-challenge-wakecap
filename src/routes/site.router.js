@@ -49,9 +49,10 @@ router.get('/refresh-queues', async (req, res) => {
     const output = await sitesService.find();
     output.map(async (obj) => {
       const reportTime = sitesService.findMidnightofSiteTimeZone(obj.timezone);
+      // eslint-disable-next-line no-underscore-dangle
       const job = queue.create('getSiteStats', { site_id: obj._id, email: obj.email });
       job.repeatAt(reportTime, {
-        skipImmediate: true,
+        // skipImmediate: true,
       });
       job.save();
     });

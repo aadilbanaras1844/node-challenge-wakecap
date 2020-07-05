@@ -6,8 +6,9 @@ import {
 export default class SiteService {
   async add(params) {
     try {
-      const newObject = new siteModel(params);
-      return await newObject.save();
+      // eslint-disable-next-line new-cap
+      this.newObject = new siteModel(params);
+      return await this.newObject.save();
     } catch (error) {
       return error;
     }
@@ -15,8 +16,8 @@ export default class SiteService {
 
   async findById(_id) {
     try {
-      const rows = await siteModel.findById(_id);
-      return rows;
+      this.rows = await siteModel.findById(_id);
+      return this.rows;
     } catch (error) {
       return error;
     }
@@ -24,8 +25,8 @@ export default class SiteService {
 
   async find() {
     try {
-      const rows = await siteModel.find({});
-      return rows;
+      this.rows = await siteModel.find({});
+      return this.rows;
     } catch (error) {
       return error;
     }
@@ -34,53 +35,60 @@ export default class SiteService {
   findWorkerStats(reportDate, siteId) {
     // const site = await this.findById(site_id);
     const self = this;
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise((async (resolve) => {
       let {
-        name,
         timezone,
+        // eslint-disable-next-line camelcase
         starting_time,
+        // eslint-disable-next-line camelcase
         ending_time,
+        // eslint-disable-next-line camelcase
         late_threshold,
       } = await self.findById(siteId);
 
-      const starting_time_split = starting_time.split(':');
-      const endinging_time_split = ending_time.split(':');
+      const startingTimeSplit = starting_time.split(':');
+      const endingingTimeSplit = ending_time.split(':');
+      // eslint-disable-next-line camelcase
       late_threshold *= 60;
 
-      const report_day = {
+      const reportDay = {
         start: moment(reportDate).startOf('day').toDate(),
         end: moment(reportDate).endOf('day').toDate(),
       };
 
-      const working_hours = {
-        start: moment(reportDate).startOf('day').hours(starting_time_split[0]).minute(starting_time_split[1])
+      const workingHours = {
+        start: moment(reportDate).startOf('day').hours(startingTimeSplit[0]).minute(startingTimeSplit[1])
           .toDate(),
-        end: moment(reportDate).startOf('day').hours(endinging_time_split[0]).minute(endinging_time_split[1])
+        end: moment(reportDate).startOf('day').hours(endingingTimeSplit[0]).minute(endingingTimeSplit[1])
           .toDate(),
       };
 
-      const query = self.makeQuery(timezone, working_hours, late_threshold, report_day);
+      const query = self.makeQuery(timezone, workingHours, late_threshold, reportDay);
 
       let rows = await workerModel.aggregate(query);
 
-      const absent_workers = rows.filter((obj) => obj.is_absent == true);
+      const absentWorkers = rows.filter((obj) => obj.is_absent === true);
       rows = rows.map((obj) => {
+        // eslint-disable-next-line no-param-reassign
         obj.active_time = moment.utc(obj.active_time * 1000).format('HH:mm:ss');
+        // eslint-disable-next-line no-param-reassign
         obj.inactive_time = moment.utc(obj.inactive_time * 1000).format('HH:mm:ss');
         return obj;
       });
-      const late_workers = rows.filter((obj) => obj.is_late == true);
-      const present_workers = rows.filter((obj) => obj.is_absent == false);
+      const lateWorkers = rows.filter((obj) => obj.is_late === true);
+      const presentWorkers = rows.filter((obj) => obj.is_absent === false);
       return resolve({
         all: rows,
-        absent_workers,
-        late_workers,
-        present_workers,
+        absent_workers: absentWorkers,
+        late_workers: lateWorkers,
+        present_workers: presentWorkers,
       });
     }));
   }
 
-  makeQuery(timezone, working_hours, late_threshold, report_day) {
+  // eslint-disable-next-line class-methods-use-this
+  makeQuery(timezone, workingHours, lateThreshold, reportDay) {
     const query = [
       {
         $lookup: {
@@ -99,11 +107,11 @@ export default class SiteService {
                 $and: [
                   {
                     $gte: [
-                      '$$obj.added_date', report_day.start,
+                      '$$obj.added_date', reportDay.start,
                     ],
                   }, {
                     $lt: [
-                      '$$obj.added_date', report_day.end,
+                      '$$obj.added_date', reportDay.end,
                     ],
                   },
 
@@ -130,8 +138,8 @@ export default class SiteService {
           location_time: '$locations.added_date',
           name: 1,
           timezone,
-          starting_time: working_hours.start,
-          late_threshold,
+          starting_time: workingHours.start,
+          late_threshold: lateThreshold,
         },
       }, {
         $project: {
@@ -225,7 +233,7 @@ export default class SiteService {
             $cond: {
               if: {
                 $gt: [
-                  '$time_late', late_threshold,
+                  '$time_late', lateThreshold,
                 ],
               },
               then: true,
@@ -271,17 +279,23 @@ export default class SiteService {
     reportTime.minute('00');
 
     const op = timezone[0];
+    // eslint-disable-next-line no-param-reassign
     timezone = timezone.substr(1, 5).split(':');
-    if (op == '-') {
+    if (op === '-') {
+      // eslint-disable-next-line radix
       reportTime.minutes(reportTime.minutes() + parseInt(timezone[1]));
+      // eslint-disable-next-line radix
       reportTime.hours(reportTime.hours() + parseInt(timezone[0]));
-    } else if (op == '+') {
+    } else if (op === '+') {
+      // eslint-disable-next-line radix
       reportTime.minutes(reportTime.minutes() - parseInt(timezone[1]));
+      // eslint-disable-next-line radix
       reportTime.hours(reportTime.hours() - parseInt(timezone[0]));
     }
     return `${this.pad(reportTime.hours())}:${this.pad(reportTime.minutes())}`;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   pad(d) {
     return (d < 10) ? `0${d.toString()}` : d.toString();
   }
